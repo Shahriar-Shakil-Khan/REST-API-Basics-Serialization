@@ -41,7 +41,7 @@ in this urls.py of todo
 
 in this views.py of todo
 
-     class ToDoListApiView(View):
+    class ToDoListApiView(View):
         def get(self, request):
             todos = Todo.objects.all()
             formatted_todo = []
@@ -55,4 +55,28 @@ in this views.py of todo
                     'updated_at': todo.updated_at.strftime('%Y/%m/%d %H:%M:%S')
                 })
             formatted_todo = json.dumps(formatted_todo, indent=4)    
-            return HttpResponse(formatted_todo, content_type="application/json")     
+            return HttpResponse(formatted_todo, content_type="application/json")   
+
+
+    def post(self, request):
+        formatted_data = json.loads(request.body)
+        # Note: If 'title', 'description', or 'completed' are missing, this will raise KeyError
+        created_todo = Todo.objects.create(
+            title=formatted_data['title'],
+            description=formatted_data['description'],
+            completed=formatted_data['completed']
+        )
+        data_to_return = {
+            'id': created_todo.id,
+            'title': created_todo.title,
+            'description': created_todo.description,
+            'completed': created_todo.completed,
+            'created_at': created_todo.created_at.strftime('%Y/%m/%d %H:%M:%S'),
+            'updated_at': created_todo.updated_at.strftime('%Y/%m/%d %H:%M:%S')
+        }
+        data_to_return = json.dumps(data_to_return, indent=4)
+        return HttpResponse(data_to_return, content_type="application/json")     
+
+pip install djangorestframework  and add in sitting.py file on installed_app      
+        
+        
