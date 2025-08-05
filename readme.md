@@ -36,4 +36,23 @@ in this views.py of todo
 
 
 in this urls.py of todo 
-     path('todos/', ToDoListView.as_view(), name='todo_list'),       
+
+     path('todos/', ToDoListView.as_view(), name='todo_list'),  
+
+in this views.py of todo
+
+     class ToDoListApiView(View):
+        def get(self, request):
+            todos = Todo.objects.all()
+            formatted_todo = []
+            for todo in todos:
+                formatted_todo.append({
+                    'id': todo.id,
+                    'title': todo.title,
+                    'description': todo.description,
+                    'completed': todo.completed,
+                    'created_at': todo.created_at.strftime('%Y/%m/%d %H:%M:%S'),
+                    'updated_at': todo.updated_at.strftime('%Y/%m/%d %H:%M:%S')
+                })
+            formatted_todo = json.dumps(formatted_todo, indent=4)    
+            return HttpResponse(formatted_todo, content_type="application/json")     
